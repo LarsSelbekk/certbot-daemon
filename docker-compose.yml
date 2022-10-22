@@ -7,7 +7,7 @@ services:
     secrets:
       - domeneshop.ini
     volumes:
-      - /mnt/user/appdata/swag/etc/letsencrypt/live/barelars.no:/certs
+      - ${CERT_DESTINATION?Must specify cert destination using CERT_DESTINATION}:/certs
     environment:
       DOMAINS: $DOMAINS
     entrypoint:
@@ -34,5 +34,3 @@ services:
 secrets:
   domeneshop.ini:
     file: ./domeneshop.ini
-
- # -L /dev/stdout
