@@ -1,0 +1,38 @@
+version: "3.8"
+
+services:
+  cert:
+    build: .
+    container_name: barelars-certbot
+    secrets:
+      - domeneshop.ini
+    volumes:
+      - /mnt/user/appdata/swag/etc/letsencrypt/live/barelars.no:/certs
+    environment:
+      DOMAINS: $DOMAINS
+    entrypoint:
+      - /bin/sh
+      - -c
+    command:
+      - >-
+        certbot certonly
+        --agree-tos
+        --noninteractive
+        --authenticator dns-domeneshop
+        --dns-domeneshop-credentials /run/secrets/domeneshop.ini
+        --dns-domeneshop-propagation-seconds 120
+        --domains ${DOMAINS:?Must specify domains using DOMAINS}
+        ${EMAIL:+--email $EMAIL}
+        ${STAGING:+--test-cert}
+        ${DRY_RUN:+--dry-run}
+        && if [ -z $DRY_RUN ]
+           then ( /onRenew.sh && crond -f)
+           else true
+           fi
+
+
+secrets:
+  domeneshop.ini:
+    file: ./domeneshop.ini
+
+ # -L /dev/stdout
