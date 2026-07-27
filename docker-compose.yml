@@ -18,6 +18,7 @@ services:
         certbot certonly
         --agree-tos
         --noninteractive
+        --key-type ecdsa
         --authenticator dns-domeneshop
         --dns-domeneshop-credentials /run/secrets/domeneshop.ini
         --dns-domeneshop-propagation-seconds 120
